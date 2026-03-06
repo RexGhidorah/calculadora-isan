@@ -124,30 +124,22 @@ const App = () => {
 
   const [precioBaseCalculado, setPrecioBaseCalculado] = useState(0);
   const [inputValue, setInputValue] = useState("690,300");
-  const [marcaSeleccionada, setMarcaSeleccionada] = useState("");
-  const [vehiculoSeleccionado, setVehiculoSeleccionado] = useState(null);
-
-  // NUEVO ESTADO: 'auto', 'camion', 'electrico'
-  const [tipoVehiculoManual, setTipoVehiculoManual] = useState("auto");
-
-  useEffect(() => {
-    // Leer marca de sessionStorage si existe
+  const [marcaSeleccionada, setMarcaSeleccionada] = useState(() => {
     const authDataRaw = sessionStorage.getItem('authData');
     if (authDataRaw) {
       try {
         const authData = JSON.parse(authDataRaw);
-        if (authData.marca) {
-          setMarcaSeleccionada(authData.marca);
-        }
+        return authData.marca || "";
       } catch (e) {
-        console.error("Error parsing authData from sessionStorage", e);
-        window.location.href = '/login.html';
+        return "";
       }
-    } else {
-      // Redirigir al login si no hay sesión
-      window.location.href = '/login.html';
     }
-  }, []);
+    return "";
+  });
+  const [vehiculoSeleccionado, setVehiculoSeleccionado] = useState(null);
+
+  // NUEVO ESTADO: 'auto', 'camion', 'electrico'
+  const [tipoVehiculoManual, setTipoVehiculoManual] = useState("auto");
 
   const [searchTerm, setSearchTerm] = useState("");
   const [copied, setCopied] = useState(false);
