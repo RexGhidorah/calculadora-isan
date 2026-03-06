@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Calculator, Info, Car, FileText, AlertCircle, DollarSign, ChevronDown, Zap, Fuel, Leaf, Palette, Sparkles, Truck, Search, X, Copy, Check, ArrowDown, MinusCircle, CarFront } from 'lucide-react';
+import { Calculator, Info, Car, FileText, AlertCircle, DollarSign, ChevronDown, Zap, Fuel, Leaf, Palette, Sparkles, Truck, Search, X, Copy, Check, ArrowDown, MinusCircle, CarFront, LogOut } from 'lucide-react';
 
 const App = () => {
   const THEMES = {
@@ -35,6 +35,28 @@ const App = () => {
       banner: "bg-stone-900",
       badge: "bg-rose-100 text-rose-700 border-rose-200",
       glow: "shadow-rose-200"
+    },
+    "MINI": {
+      primary: "bg-emerald-600",
+      secondary: "bg-emerald-50",
+      accent: "text-emerald-600",
+      border: "border-emerald-200",
+      button: "bg-emerald-600 hover:bg-emerald-700",
+      ring: "focus:ring-emerald-500/20",
+      banner: "bg-zinc-900",
+      badge: "bg-emerald-100 text-emerald-700 border-emerald-200",
+      glow: "shadow-emerald-200"
+    },
+    "Infiniti": {
+      primary: "bg-violet-700",
+      secondary: "bg-violet-50",
+      accent: "text-violet-700",
+      border: "border-violet-200",
+      button: "bg-violet-700 hover:bg-violet-800",
+      ring: "focus:ring-violet-500/20",
+      banner: "bg-zinc-900",
+      badge: "bg-violet-100 text-violet-700 border-violet-200",
+      glow: "shadow-violet-200"
     },
     "Default": {
       primary: "bg-slate-700",
@@ -104,6 +126,15 @@ const App = () => {
       { modelo: "Cyberster", variante: "100 Aniversario", motor: "Eléctrico", precio: 2150000 },
       { modelo: "MG 3", variante: "Hybrid Plus", motor: "Híbrido", precio: 435000 },
       { modelo: "GT", variante: "Trophy", motor: "Gasolina", precio: 475000 }
+    ],
+    "MINI": [
+      { modelo: "Cooper", variante: "S Essential", motor: "Gasolina", precio: 750000 },
+      { modelo: "Cooper", variante: "SE Eléctrico", motor: "Eléctrico", precio: 890000 },
+      { modelo: "Countryman", variante: "S All4", motor: "Gasolina", precio: 950000 }
+    ],
+    "Infiniti": [
+      { modelo: "Q50", variante: "Luxe", motor: "Gasolina", precio: 980000 },
+      { modelo: "QX60", variante: "Sensory", motor: "Gasolina", precio: 1450000 }
     ]
   };
 
@@ -261,7 +292,14 @@ const App = () => {
     if (!searchTerm.trim()) return null;
     const term = searchTerm.toLowerCase();
     const results = [];
-    Object.entries(CATALOGO).forEach(([marca, modelos]) => {
+
+    // Si hay una marca seleccionada (logueado), solo buscar en esa marca.
+    // Si no, buscar en todo el catálogo.
+    const marcasBuscar = marcaSeleccionada && CATALOGO[marcaSeleccionada]
+      ? [[marcaSeleccionada, CATALOGO[marcaSeleccionada]]]
+      : Object.entries(CATALOGO);
+
+    marcasBuscar.forEach(([marca, modelos]) => {
       modelos.forEach(m => {
         if (m.modelo.toLowerCase().includes(term) || m.variante.toLowerCase().includes(term) || m.motor.toLowerCase().includes(term) || marca.toLowerCase().includes(term)) {
           results.push({ ...m, marca });
@@ -269,7 +307,7 @@ const App = () => {
       });
     });
     return results;
-  }, [searchTerm]);
+  }, [searchTerm, marcaSeleccionada]);
 
   const resultados = useMemo(() => {
     const precio = precioBaseCalculado;
@@ -377,6 +415,19 @@ const App = () => {
               </div>
               <div className={`w-1 h-8 rounded-full ${currentTheme.primary} opacity-20 transition-colors duration-500`}></div>
             </div>
+            {marcaSeleccionada && (
+              <button
+                onClick={() => {
+                  sessionStorage.removeItem('authData');
+                  window.location.href = '/login.html';
+                }}
+                className={`bg-white px-4 py-2.5 rounded-2xl shadow-sm border border-slate-200 flex items-center gap-2 text-slate-500 hover:text-red-600 hover:border-red-200 hover:bg-red-50 transition-all duration-300 group`}
+                title="Cerrar Sesión"
+              >
+                <LogOut size={18} className="group-hover:-translate-x-0.5 transition-transform" />
+                <span className="text-[10px] font-bold uppercase tracking-widest hidden sm:inline">Salir</span>
+              </button>
+            )}
           </div>
         </header>
 
@@ -492,7 +543,38 @@ const App = () => {
                       <div className="text-center py-10"><p className="text-xs font-bold text-slate-300">Sin resultados</p></div>
                     )}
                   </div>
+                ) : marcaSeleccionada && CATALOGO[marcaSeleccionada] ? (
+                  // Si el usuario está logueado, solo mostrar la lista de su marca sin el header desplegable
+                  <div className="grid grid-cols-1 gap-1.5 animate-in fade-in slide-in-from-top-4 duration-300">
+                    {CATALOGO[marcaSeleccionada].map(v => {
+                      const brandTheme = THEMES[marcaSeleccionada] || THEMES.Default;
+                      const isSelectedModel = vehiculoSeleccionado?.modelo === v.modelo && vehiculoSeleccionado?.variante === v.variante;
+                      return (
+                        <button
+                          key={`${v.modelo}-${v.variante}`}
+                          onClick={() => handleSelectVehiculo(v, marcaSeleccionada)}
+                          className={`text-left p-3.5 rounded-2xl text-xs transition-all flex flex-col gap-1.5 border group ${isSelectedModel ? brandTheme.secondary + ' ' + brandTheme.border + ' shadow-md ring-1 ' + brandTheme.border : 'bg-white/50 border-slate-100 hover:bg-white hover:border-slate-200'}`}
+                        >
+                          <div className="flex justify-between items-start w-full">
+                            <span className={`font-bold transition-colors ${isSelectedModel ? brandTheme.accent : 'text-slate-800'}`}>{v.modelo}</span>
+                            <span className={`font-mono font-black ${isSelectedModel ? brandTheme.accent : 'text-slate-400 group-hover:text-slate-600'}`}>{formatCurrency(v.precio)}</span>
+                          </div>
+                          <div className="flex justify-between items-center text-[10px]">
+                            <span className="text-slate-400 font-medium italic">{v.variante}</span>
+                            <div className="flex items-center gap-2">
+                              {v.esCamion && <Truck size={12} className={brandTheme.accent} />}
+                              <span className={`flex items-center gap-1 font-black uppercase tracking-tighter ${v.motor === 'Gasolina' ? 'text-amber-600' : 'text-emerald-600'}`}>
+                                {v.motor === 'Gasolina' ? <Fuel size={10} /> : <Zap size={10} />}
+                                {v.motor}
+                              </span>
+                            </div>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
                 ) : (
+                  // Fallback para usuarios no logueados (vista original)
                   Object.keys(CATALOGO).map(marca => {
                     const brandTheme = THEMES[marca] || THEMES.Default;
                     const isSelected = marcaSeleccionada === marca;
