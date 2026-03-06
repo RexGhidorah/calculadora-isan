@@ -141,7 +141,11 @@ const App = () => {
         }
       } catch (e) {
         console.error("Error parsing authData from sessionStorage", e);
+        window.location.href = '/login.html';
       }
+    } else {
+      // Redirigir al login si no hay sesión
+      window.location.href = '/login.html';
     }
   }, []);
 
