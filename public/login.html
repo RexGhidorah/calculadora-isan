@@ -14,6 +14,8 @@
             --text-main: #0f172a;
             --text-secondary: #475569;
             --input-bg: rgba(255, 255, 255, 0.6);
+            --input-focus-bg: white;
+            --input-focus-text: #0f172a;
             --border-color: rgba(0, 0, 0, 0.05);
         }
 
@@ -24,6 +26,8 @@
                 --text-main: #ffffff;
                 --text-secondary: #cbd5e1;
                 --input-bg: rgba(255, 255, 255, 0.05);
+                --input-focus-bg: rgba(255, 255, 255, 0.1);
+                --input-focus-text: #ffffff;
                 --border-color: rgba(255, 255, 255, 0.15);
             }
         }
@@ -114,7 +118,8 @@
 
         .tc-input:focus {
             border-color: var(--tc-red);
-            background: white;
+            background: var(--input-focus-bg);
+            color: var(--input-focus-text);
             box-shadow: 0 0 0 4px rgba(196, 18, 48, 0.08);
         }
 
@@ -160,9 +165,11 @@
         <div class="hidden lg:flex lg:col-span-3 flex-col justify-between p-16 relative overflow-hidden border-r border-black/[0.03] dark:border-white/5">
             <div class="relative z-10">
                 <div class="flex items-center gap-4 mb-20 group cursor-default">
-                    <div class="flex flex-col">
+                    <div class="flex flex-col w-fit">
                         <span class="text-4xl font-extrabold tracking-tighter leading-none text-slate-900 dark:text-white">TORRES</span>
-                        <span class="text-4xl font-extrabold tracking-tighter leading-none text-[#C41230]">CORZO</span>
+                        <div class="text-4xl font-extrabold tracking-tighter leading-none text-[#C41230] flex justify-between w-full">
+                            <span>C</span><span>O</span><span>R</span><span>Z</span><span>O</span>
+                        </div>
                     </div>
                     <div class="h-12 w-[3px] bg-[#C41230]"></div>
                     <div class="text-[10px] font-bold tracking-[0.3em] text-slate-500 dark:text-slate-400 uppercase leading-tight">
@@ -199,8 +206,11 @@
 
         <!-- Panel Derecho: Acceso -->
         <div class="lg:col-span-2 p-8 md:p-16 flex flex-col justify-center bg-white/20 dark:bg-black/20">
-            <div class="lg:hidden mb-12">
-                <span class="text-2xl font-black italic tracking-tighter text-slate-900 dark:text-white">TORRES<span class="text-[#C41230]">CORZO</span></span>
+            <div class="lg:hidden mb-12 flex flex-col w-fit mx-auto">
+                <span class="text-3xl font-black italic tracking-tighter leading-none text-slate-900 dark:text-white">TORRES</span>
+                <div class="text-3xl font-black italic tracking-tighter leading-none text-[#C41230] flex justify-between w-full">
+                    <span>C</span><span>O</span><span>R</span><span>Z</span><span>O</span>
+                </div>
             </div>
 
             <div class="max-w-sm w-full mx-auto">
@@ -282,8 +292,11 @@
 
     <!-- Transición de Carga -->
     <div id="overlay" class="fixed inset-0 bg-white dark:bg-black z-50 flex flex-col items-center justify-center opacity-0 pointer-events-none transition-all duration-700">
-        <div class="mb-8">
-            <span class="text-4xl font-black italic tracking-tighter text-slate-900 dark:text-white">TORRES<span class="text-[#C41230]">CORZO</span></span>
+        <div class="mb-8 flex flex-col w-fit">
+            <span class="text-5xl font-black italic tracking-tighter leading-none text-slate-900 dark:text-white">TORRES</span>
+            <div class="text-5xl font-black italic tracking-tighter leading-none text-[#C41230] flex justify-between w-full">
+                <span>C</span><span>O</span><span>R</span><span>Z</span><span>O</span>
+            </div>
         </div>
         <div class="w-48 h-1 bg-black/5 dark:bg-white/10 rounded-full overflow-hidden">
             <div id="loaderBar" class="h-full bg-[#C41230] w-0 transition-all duration-1000"></div>
