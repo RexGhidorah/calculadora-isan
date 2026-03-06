@@ -130,6 +130,21 @@ const App = () => {
   // NUEVO ESTADO: 'auto', 'camion', 'electrico'
   const [tipoVehiculoManual, setTipoVehiculoManual] = useState("auto");
 
+  useEffect(() => {
+    // Leer marca de sessionStorage si existe
+    const authDataRaw = sessionStorage.getItem('authData');
+    if (authDataRaw) {
+      try {
+        const authData = JSON.parse(authDataRaw);
+        if (authData.marca) {
+          setMarcaSeleccionada(authData.marca);
+        }
+      } catch (e) {
+        console.error("Error parsing authData from sessionStorage", e);
+      }
+    }
+  }, []);
+
   const [searchTerm, setSearchTerm] = useState("");
   const [copied, setCopied] = useState(false);
 
